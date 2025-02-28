@@ -9,6 +9,7 @@ async function build() {
     
     // Copy static assets
     await fs.copy(path.join(__dirname, '../src/css'), path.join(__dirname, '../dist/css'));
+    await fs.copy(path.join(__dirname, '../src/images'), path.join(__dirname, '../dist/images'));
     
     // Build pages
     const contentDir = path.join(__dirname, '../src/content');
@@ -34,14 +35,16 @@ async function build() {
     // Create index.html
     const indexPath = path.join(__dirname, '../src/index.html');
     const indexContent = await fs.readFile(indexPath, 'utf-8');
-    const mainContent = indexContent.match(/<main>([\s\S]*)<\/main>/)[1];
+    
+    // Instead of extracting just the main content, let's use the whole body content
+    const bodyContent = indexContent.match(/<body>([\s\S]*)<\/body>/)[1];
 
-    await fs.writeFile(
-        'dist/index.html',
-        template
-            .replace('{{title}}', 'Home')
-            .replace('{{content}}', mainContent)
-    );
+    // Create a new HTML document using the template
+    const newHtml = template
+        .replace('{{title}}', 'Home')
+        .replace('{{content}}', bodyContent);
+
+    await fs.writeFile('dist/index.html', newHtml);
 
     // Process blog posts
     const blogDir = path.join(contentDir, 'blog');
