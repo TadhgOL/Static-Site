@@ -8,11 +8,11 @@ async function build() {
     await fs.ensureDir('dist');
     
     // Copy static assets
-    await fs.copy('static', 'dist');
+    await fs.copy(path.join(__dirname, '../src/css'), path.join(__dirname, '../dist/css'));
     
     // Build pages
     const contentDir = path.join(__dirname, '../src/content');
-    const templatePath = path.join(__dirname, '../templates/base.html');
+    const templatePath = path.join(__dirname, '../src/templates/base.html');
     
     // Ensure template exists
     if (!await fs.pathExists(templatePath)) {
@@ -32,7 +32,7 @@ async function build() {
     }
 
     // Create index.html
-    const indexPath = path.join(__dirname, '../index.html');
+    const indexPath = path.join(__dirname, '../src/index.html');
     const indexContent = await fs.readFile(indexPath, 'utf-8');
     const mainContent = indexContent.match(/<main>([\s\S]*)<\/main>/)[1];
 
