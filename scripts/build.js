@@ -92,6 +92,21 @@ async function build() {
         );
         console.log('Created blog index:', blogIndexPath);
     }
+
+    // Process general content pages
+    const pagesDir = path.join(contentDir, 'pages');
+    if (await fs.pathExists(pagesDir)) {
+        const pageFiles = await fs.readdir(pagesDir);
+        
+        for (const file of pageFiles) {
+            if (file.endsWith('.md')) {
+                const html = await processMarkdown(path.join(pagesDir, file));
+                const outputFile = path.join(__dirname, '../dist', file.replace('.md', '.html'));
+                await fs.writeFile(outputFile, html);
+                console.log('Created page:', outputFile);
+            }
+        }
+    }
 }
 
 build().catch(err => {
